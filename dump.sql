@@ -1,3 +1,6 @@
+# CREATE DATABASE challengeInjectionSQL;
+# use challengeInjectionSQL;
+
 CREATE TABLE t_user (
   idUser int(11) NOT NULL AUTO_INCREMENT,
   useLogin varchar(20) NOT NULL,
