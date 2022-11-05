@@ -1,5 +1,10 @@
-# CREATE DATABASE challengeInjectionSQL;
-# use challengeInjectionSQL;
+DROP DATABASE challengeInjectionSQL;
+CREATE DATABASE challengeInjectionSQL;
+USE challengeInjectionSQL;
+
+DROP USER IF EXISTS 'injectionsqluser'@localhost;
+CREATE USER 'injectionsqluser'@localhost IDENTIFIED BY '.ETML151';
+GRANT ALL PRIVILEGES ON *.* TO 'injectionsqluser'@localhost IDENTIFIED BY '.ETML151';
 
 CREATE TABLE t_user (
   idUser int(11) NOT NULL AUTO_INCREMENT,

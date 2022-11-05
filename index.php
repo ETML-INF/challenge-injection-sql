@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userPassword = $_POST["usePassword"];
 
     // Création d'une instance PDO pour se connecter à la base de données en base de données
-    $connector = new PDO("mysql:host=localhost;dbname=challengeinjectionsql;charset=utf8", 'root', '');
+    $connector = new PDO("mysql:host=localhost;dbname=challengeInjectionSQL;charset=utf8", 'injectionsqluser', '.ETML151');
 
     // Création de la requête SQL permettant de récupérer les informations de l'utilisateur
     // à partir du login et password saisis par l'utilisateur
@@ -47,13 +47,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="block">
             <h2>Se connecter</h2>
             <form method="post" action="index.php" style="margin-top: 40px">
-                Username: <input type="text" name="useLogin" value="">
-                Password: <input type="text" name="usePassword" value="">
+                Nom de l'utilisateur: <input class="input type=" text" name="useLogin" value="" placeholder="Merci de saisir votre nom d'utilisateur">
+                Mot de passe: <input class="input" type="password" name="usePassword" value="" placeholder="Merci de saisir votre mot de passe">
                 <input type="submit" name="login" value="Login">
             </form>
         </div>
         <div class="block">
-            <h2>Utilisateur connecté ? : <?php echo $isUserConnected ?></h2>
+            <h2>Utilisateur connecté ? :
+                <?php if ($isUserConnected === 1) {
+                    echo "Oui";
+                } else {
+                    echo "Non";
+                }  ?>
+            </h2>
             <?php if ($isUserConnected) {
                 echo "<h2>Bonjour " . $user[0]["useLogin"] . " </h2>";
             } ?>
