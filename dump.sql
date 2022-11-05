@@ -1,4 +1,4 @@
-DROP DATABASE challengeInjectionSQL;
+DROP DATABASE IF EXISTS challengeInjectionSQL;
 CREATE DATABASE challengeInjectionSQL;
 USE challengeInjectionSQL;
 
