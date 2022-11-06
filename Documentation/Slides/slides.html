@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="ETML">
+  <title>Module 151 - Intégrer des bases de données dans des applications Web</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/reveal.css">
+  <style>
+    .reveal .sourceCode {  /* see #7635 */
+      overflow: visible;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^4//dist/theme/solarized.css" id="theme">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Module 151 - Intégrer des bases de données dans des applications Web</h1>
+  <p class="author">ETML</p>
+</section>
+
+<section>
+<section id="injection-sql" class="title-slide slide level1">
+<h1>Injection SQL</h1>
+
+</section>
+<section id="accroche" class="slide level2">
+<h2>Accroche</h2>
+<!-- [![Injection SQL en vidéo](./images/injectionSQL-video.png){ width=55% }](https://youtu.be/YD30JdMhJu0){target="\_blank"} -->
+<figure>
+<img data-src="./images/injectionSQL-video.png" style="width:55.0%" alt="Pourquoi s’intéresser aux attaques par injection SQL ?" /><figcaption aria-hidden="true">Pourquoi s’intéresser aux attaques par <strong>injection SQL</strong> ?</figcaption>
+</figure>
+</section>
+<section id="objectif-pédagogique" class="slide level2">
+<h2>Objectif pédagogique</h2>
+<p><strong>Protéger</strong> une application PHP contre les attaques par <strong>injection SQL</strong> en utilisant le connecteur PDO</p>
+</section>
+<section id="quest-ce-quune-attaque-par-injection-sql" class="slide level2">
+<h2>Qu’est ce qu’une attaque par injection SQL ?</h2>
+</section>
+<section id="définition" class="slide level2">
+<h2>Définition</h2>
+<p>Une <strong>injection SQL</strong> est un type d’attaque qui permet à un attaquant <strong>d’insérer des instructions SQL malveillantes</strong> dans une application</p>
+</section>
+<section id="impacts" class="slide level2">
+<h2>Impacts</h2>
+<ul>
+<li>Exposer des données sensibles</li>
+<li>Compromettre l’intégrité des données</li>
+<li>Donner à un pirate un accès général à votre système</li>
+</ul>
+</section>
+<section id="exemples-dattaques" class="slide level2">
+<h2>Exemples d’attaques</h2>
+<p><strong>Fortnite, 2019</strong></p>
+<p>Fortnite est un jeu en ligne qui compte plus de 350 millions d’utilisateurs. En 2019, une vulnérabilité par injection SQL a été détectée, susceptible de permettre aux pirates <strong>d’accéder aux comptes des utilisateurs</strong>.</p>
+</section>
+<section id="exemples-dattaques-1" class="slide level2">
+<h2>Exemples d’attaques</h2>
+<p><strong>Cisco, 2018</strong></p>
+<p>Une vulnérabilité par injection SQL a été détectée dans le gestionnaire de licences Cisco Prime en 2018. La vulnérabilité permettait aux pirates <strong>d’obtenir un accès shell</strong> aux systèmes sur lesquels le gestionnaire de licences était déployé.</p>
+</section>
+<section id="exemples-dattaques-2" class="slide level2">
+<h2>Exemples d’attaques</h2>
+<p><strong>Tesla, 2014</strong></p>
+<p>En 2014, des chercheurs en sécurité informatique ont annoncé qu’ils étaient en mesure de s’introduire sur le site Web de Tesla à l’aide d’une injection SQL, <strong>obtenant des privilèges d’administration</strong> et volant les données des utilisateurs.</p>
+</section>
+<section id="connecteur-pdo" class="slide level2">
+<h2>Connecteur PDO</h2>
+<p>propose 2 méthodes pour exécuter une requête SQL :</p>
+<ul>
+<li>méthode <strong>query()</strong></li>
+<li>méthode <strong>prepare()</strong></li>
+</ul>
+</section>
+<section id="méthode-query---exemple-1" class="slide level2">
+<h2>Méthode query() - Exemple 1</h2>
+<p><img data-src="./images/exemple1.png" style="width:65.0%" /></p>
+<p>Question : Code sécurisé ?</p>
+</section>
+<section id="méthode-query---exemple-1-1" class="slide level2">
+<h2>Méthode query() - Exemple 1</h2>
+<p><img data-src="./images/exemple1.png" style="width:65.0%" /></p>
+<p><span style="color:green; padding-bottom: 50px;"> <img src="./images/check_yes_icon.png" style="margin:0; width:5.0%" /> Code sécurisé !</span></p>
+</section>
+<section id="méthode-query---exemple-2" class="slide level2">
+<h2>Méthode query() - Exemple 2</h2>
+<p><img data-src="./images/exemple2.png" style="width:100.0%" /></p>
+<p>Question : Code sécurisé ?</p>
+</section>
+<section id="méthode-query---exemple-2-1" class="slide level2">
+<h2>Méthode query() - Exemple 2</h2>
+<p><img data-src="./images/exemple2.png" style="width:100.0%" /></p>
+<p><span style="color:red; padding-bottom: 50px;"> <img src="./images/check_no_icon.png" style="margin:0; width:5.0%" /> Code non sécurisé !</span></p>
+</section>
+<section id="règle" class="slide level2">
+<h2>Règle</h2>
+<p>Nous devons utiliser la méthode <strong>prepare()</strong> dès que la requête SQL est créée à partir d’une concaténation des valeurs saisies par l’utilisateur</p>
+</section>
+<section id="correction-de-lexemple-2---prepare" class="slide level2">
+<h2>Correction de l’exemple 2 - prepare()</h2>
+<p><img data-src="./images/exemple3.png" style="width:100.0%" /></p>
+</section>
+<section id="correction-de-lexemple-2---prepare-1" class="slide level2">
+<h2>Correction de l’exemple 2 - prepare()</h2>
+<p><img data-src="./images/exemple3.png" style="width:100.0%" /></p>
+<p><span style="color:green; padding-bottom: 50px;"> <img src="./images/check_yes_icon.png" style="margin:0; width:5.0%" /> Code sécurisé !</span></p>
+</section>
+<section id="challenge-pour-les-hackers" class="slide level2">
+<h2>Challenge pour les Hackers</h2>
+<p><img data-src="./images/challenge.png" style="width:100.0%" /></p>
+</section>
+<section id="challenge-pour-les-hackers-1" class="slide level2">
+<h2>Challenge pour les Hackers</h2>
+<p><a href="https://eduvaud.sharepoint.com/:b:/s/ETML_INF-GRP2A-22-23_Teams/EVrCNCE5TVxInjw_DpRCYGgBpzYaj5oA0-O8mvxLhmBfuQ?e=Z9bxQU" target="_blank">E-151-GCR-InjectionSQL.pdf</a></p>
+</section>
+<section id="evaluation" class="slide level2">
+<h2>Evaluation</h2>
+<p><a href="https://forms.office.com/r/if6pEDReH7" target="_blank">Formulaire FORMS</a></p>
+</section>
+<section id="merci-pour-votre-attention" class="slide level2">
+<h2>Merci pour votre attention !</h2>
+<p><img data-src="./images/xkcd.png" style="width:100.0%" /></p>
+<!-- Use
+  pandoc -t revealjs -V theme=simple -s -o myslides.html presentation-git.md && chromium "file://$(pwd)/myslides.html?print-pdf"
+
+  pandoc -t revealjs -V theme=simple -V progress=true -V slideNumber=true -V spotlight=true --slide-level=2 -s -o myslides.html presentation-git.md && chromium "file://$(pwd)/myslides.html"
+
+-->
+<style>
+  .reveal h1 { font-size: 2em; }
+  .reveal h2 { font-size: 1.6em; }
+  .reveal h3 { font-size: 1.4em; }
+  .reveal h4 { font-size: 1.2em; }
+  .reveal h5 { font-size: 1.1em; }
+  .border { border: 1px solid #555; }
+  .reveal blockquote { width: 100% }
+  .reveal blockquote:before {
+    display: block;
+    padding-left: 10px;
+    content: "\201C";
+    font-size: 80px;
+    position: absolute;
+    left: -20px;
+    top: -20px;
+    color: #7a7a7a;
+  }
+  .reveal cite:before { content: "\2009 \2015 \2009"; }
+  .reveal cite { font-size: 80%; }
+  .reveal code {
+    background-color: #eee;
+    border-radius: 3px;
+    font-family: courier, monospace;
+    padding: 0 3px;
+    font-size: 0.8em;
+  }
+</style>
+<pre><code></code></pre>
+</section></section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^4//dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="https://unpkg.com/reveal.js@^4//plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^4//plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    </body>
+</html>
